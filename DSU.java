@@ -16,13 +16,15 @@ public class DSU {
 	static void join(node a,node b)
 	{
 		if(findParent(a)==findParent(b)) return;
-		if(a.rank>=b.rank)
+		node one=findParent(a);
+		node two=findParent(b);
+		if(one.rank>=two.rank)
 		{
-			if(a.rank==b.rank) a.rank++;
-			b.parent=a;
+			if(one.rank==two.rank) one.rank++;
+			two.parent=one;
 		}
 		else
-			a.parent=b;
+			one.parent=two;
 	}
 
 	static class node
