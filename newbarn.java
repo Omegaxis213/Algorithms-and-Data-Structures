@@ -24,32 +24,45 @@ public class newbarn {
 				jump[i][j]=-1;
 			}
 		}
-		int diamOne=0;
-		int diamTwo=0;
-		int curDiam=0;
+		int[] diamOne=new int[runs];
+		int[] diamTwo=new int[runs];
+		int[] curDiam=new int[runs];
+		int[] curTree=new int[runs];
+		int numTree=0;
+		Arrays.fill(diamOne,-1);
+		Arrays.fill(diamTwo,-1);
+		Arrays.fill(curTree,-1);
 		int counter=0;
 		int[] level=new int[runs];
 		Arrays.fill(level,-1);
-		level[0]=0;
 		for (int i = 0; i < runs; i++) {
 			st = new StringTokenizer(in.readLine());
 			String type=s();
 			int barn=i();
 			if(barn==-1)
+			{
 				level[counter]=0;
+				diamOne[numTree]=counter;
+				diamTwo[numTree]=counter;
+				curTree[counter]=numTree;
+				numTree++;
+			}
 			if(barn!=-1)
 				barn--;
 			if(type.equals("B"))
 			{
 				if(barn!=-1)
+				{
+					curTree[counter]=curTree[barn];
 					level[counter]=level[barn]+1;
+				}
 				jump[counter][0]=barn;
 				for (int j = 1; j < prefix[runs]; j++) {//make the parent links
 					if(jump[counter][j-1]==-1) break;
 					jump[counter][j]=jump[jump[counter][j-1]][j-1];//a jump of length 1<<j from counter is equal to a jump from counter to counter+1<<(j-1) and then from counter+1<<(j-1) to counter+1<<j
 				}
 				int one=counter;
-				int two=diamOne;
+				int two=diamOne[curTree[counter]];
 				int jumpCounter=prefix[runs]-1;
 				while(level[one]>level[two])//if node one is below node two, keep jumping node one
 				{
@@ -75,11 +88,11 @@ public class newbarn {
 				// System.out.println(one+" "+two+" "+level[one]+" "+level[two]);
 				if(one==two)//found the LCA
 				{
-					int dis=level[counter]-level[one]+level[diamOne]-level[one];
-					if(dis>curDiam)
+					int dis=level[counter]-level[one]+level[diamOne[curTree[counter]]]-level[one];
+					if(dis>curDiam[curTree[counter]])
 					{
-						curDiam=dis;
-						diamTwo=counter;
+						curDiam[curTree[counter]]=dis;
+						diamTwo[curTree[counter]]=counter;
 					}
 				}
 				else//didn't find the LCA
@@ -96,17 +109,17 @@ public class newbarn {
 					}
 					one=jump[one][0];
 					two=jump[two][0];
-					System.out.println(counter+" "+one+" "+diamOne+" "+one);
-					int dis=level[counter]-level[one]+level[diamOne]-level[one];
-					if(dis>curDiam)
+					// System.out.println(counter+" "+one+" "+diamOne+" "+one);
+					int dis=level[counter]-level[one]+level[diamOne[curTree[counter]]]-level[one];
+					if(dis>curDiam[curTree[counter]])
 					{
-						curDiam=dis;
-						diamTwo=counter;
+						curDiam[curTree[counter]]=dis;
+						diamTwo[curTree[counter]]=counter;
 					}
 				}
 
 				one=counter;
-				two=diamTwo;
+				two=diamTwo[curTree[counter]];
 				jumpCounter=prefix[runs]-1;
 				while(level[one]>level[two])//if node one is below node two, keep jumping node one
 				{
@@ -131,11 +144,11 @@ public class newbarn {
 				}
 				if(one==two)//found the LCA
 				{
-					int dis=level[counter]-level[one]+level[diamTwo]-level[one];
-					if(dis>curDiam)
+					int dis=level[counter]-level[one]+level[diamTwo[curTree[counter]]]-level[one];
+					if(dis>curDiam[curTree[counter]])
 					{
-						curDiam=dis;
-						diamOne=counter;
+						curDiam[curTree[counter]]=dis;
+						diamOne[curTree[counter]]=counter;
 					}
 				}
 				else//didn't find the LCA
@@ -152,11 +165,11 @@ public class newbarn {
 					}
 					one=jump[one][0];
 					two=jump[two][0];
-					int dis=level[counter]-level[one]+level[diamTwo]-level[one];
-					if(dis>curDiam)
+					int dis=level[counter]-level[one]+level[diamTwo[curTree[counter]]]-level[one];
+					if(dis>curDiam[curTree[counter]])
 					{
-						curDiam=dis;
-						diamOne=counter;
+						curDiam[curTree[counter]]=dis;
+						diamOne[curTree[counter]]=counter;
 					}
 				}
 				counter++;
@@ -166,7 +179,7 @@ public class newbarn {
 			{
 				int ans=0;
 				int one=barn;
-				int two=diamOne;
+				int two=diamOne[curTree[barn]];
 				int jumpCounter=prefix[runs]-1;
 				while(level[one]>level[two])//if node one is below node two, keep jumping node one
 				{
@@ -191,7 +204,7 @@ public class newbarn {
 				}
 				if(one==two)//found the LCA
 				{
-					int dis=level[barn]-level[one]+level[diamOne]-level[one];
+					int dis=level[barn]-level[one]+level[diamOne[curTree[barn]]]-level[one];
 					ans=Math.max(ans,dis);
 				}
 				else//didn't find the LCA
@@ -208,12 +221,12 @@ public class newbarn {
 					}
 					one=jump[one][0];
 					two=jump[two][0];
-					int dis=level[barn]-level[one]+level[diamOne]-level[one];
+					int dis=level[barn]-level[one]+level[diamOne[curTree[barn]]]-level[one];
 					ans=Math.max(ans,dis);
 				}
 
 				one=barn;
-				two=diamTwo;
+				two=diamTwo[curTree[barn]];
 				jumpCounter=prefix[runs]-1;
 				while(level[one]>level[two])//if node one is below node two, keep jumping node one
 				{
@@ -238,7 +251,7 @@ public class newbarn {
 				}
 				if(one==two)//found the LCA
 				{
-					int dis=level[barn]-level[one]+level[diamTwo]-level[one];
+					int dis=level[barn]-level[one]+level[diamTwo[curTree[barn]]]-level[one];
 					ans=Math.max(ans,dis);
 				}
 				else//didn't find the LCA
@@ -255,7 +268,7 @@ public class newbarn {
 					}
 					one=jump[one][0];
 					two=jump[two][0];
-					int dis=level[barn]-level[one]+level[diamTwo]-level[one];
+					int dis=level[barn]-level[one]+level[diamTwo[curTree[barn]]]-level[one];
 					ans=Math.max(ans,dis);
 				}
 				out.println(ans);
