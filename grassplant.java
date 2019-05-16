@@ -18,7 +18,7 @@ public class grassplant {
 	static int fin;
 
 	public static void main(String[] args) throws Exception {
-		BufferedReader in = new BufferedReader(new FileReader("grassplant/I.3"));
+		BufferedReader in = new BufferedReader(new FileReader("grassplant.in"));
 		PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("grassplant.out")));
 		String line;
 		
@@ -109,7 +109,8 @@ public class grassplant {
 					two=parentNode[chains[chainTwo].headOfChain];
 					chainTwo=parentChain[chainTwo];
 				}
-				res+=chainSegtree.querySum(1,0,runs-1,chainPos[chainOne]+(chains[chainOne].map.get(lcaNode)==null?0:chains[chainOne].map.get(lcaNode)+1),chainPos[chainOne]+Math.max(chains[chainOne].map.get(one)==null?0:chains[chainOne].map.get(one),chains[chainOne].map.get(two)==null?0:chains[chainOne].map.get(two)));
+				if(one!=two)
+					res+=chainSegtree.querySum(1,0,runs-1,chainPos[chainOne]+(chains[chainOne].map.get(lcaNode)==null?0:chains[chainOne].map.get(lcaNode)+1),chainPos[chainOne]+Math.max(chains[chainOne].map.get(one)==null?0:chains[chainOne].map.get(one),chains[chainOne].map.get(two)==null?0:chains[chainOne].map.get(two)));
 				out.println(res);
 			}
 		}
@@ -178,6 +179,7 @@ public class grassplant {
 
 	public static int dfs(int pos)
 	{
+		fin++;
 		vis[pos]=true;
 		int res=1;
 		for (int i = 0; i < arr[pos].list.size(); i++) {
