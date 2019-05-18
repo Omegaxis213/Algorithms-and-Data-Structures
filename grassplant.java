@@ -247,14 +247,14 @@ class segtree
 		if(left>r||right<l) return;
 		if(left>=l&&right<=r)
 		{
-			seg[node]+=val;
+			seg[node]+=(right-left+1)*val;
 			add[node]+=val;
 			return;
 		}
 		if(add[node]!=0)
 		{
-			seg[node*2]+=add[node];
-			seg[node*2+1]+=add[node];
+			seg[node*2]+=add[node]*((left+right)/2-left+1);
+			seg[node*2+1]+=add[node]*(right-(left+right)/2);
 			add[node*2]+=add[node];
 			add[node*2+1]+=add[node];
 			add[node]=0;
@@ -262,6 +262,7 @@ class segtree
 		int mid=(left+right)/2;
 		updateInterval(node*2,left,mid,l,r,val);
 		updateInterval(node*2+1,mid+1,right,l,r,val);
+		seg[node]=seg[node*2]+seg[node*2+1];
 	}
 	public void update(int node,int left,int right,int pos,long val)
 	{
@@ -284,8 +285,8 @@ class segtree
 		if(left>=l&&right<=r) return seg[node];
 		if(add[node]!=0)
 		{
-			seg[node*2]+=add[node];
-			seg[node*2+1]+=add[node];
+			seg[node*2]+=add[node]*((left+right)/2-left+1);
+			seg[node*2+1]+=add[node]*(right-(left+right)/2);
 			add[node*2]+=add[node];
 			add[node*2+1]+=add[node];
 			add[node]=0;
