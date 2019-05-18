@@ -97,13 +97,13 @@ public class grassplant {
 			else
 			{
 				int res=0;
-				while(chainOne!=nodeToChain[lcaNode])
+				if(chainOne!=nodeToChain[lcaNode])
 				{
 					res+=chainSegtree.querySum(1,0,runs-1,chainPos[chainOne],chainPos[chainOne]+chains[chainOne].map.get(one));
 					one=parentNode[chains[chainOne].headOfChain];
 					chainOne=parentChain[chainOne];
 				}
-				while(chainTwo!=nodeToChain[lcaNode])
+				if(chainTwo!=nodeToChain[lcaNode])
 				{
 					res+=chainSegtree.querySum(1,0,runs-1,chainPos[chainTwo],chainPos[chainTwo]+chains[chainTwo].map.get(two));
 					two=parentNode[chains[chainTwo].headOfChain];
