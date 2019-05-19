@@ -1,6 +1,9 @@
 import java.util.*;
 import java.io.*;
 public class kruskal {
+	static int[] parentNode;
+	static int[] nodeRank;
+	static int[] mst;
 	public static void main(String[] args) throws Exception {
 		BufferedReader in = new BufferedReader(new FileReader("kruskal.in"));
 		PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter("kruskal.out")));
@@ -18,14 +21,13 @@ public class kruskal {
 			maxNode=Math.max(maxNode,Math.max(one,two));
 		}
 		Arrays.sort(arr);
-		node[] nodes=new node[maxNode+1];
-		for (int i = 0; i < maxNode+1; i++) {
-			nodes[i]=new node();
-		}
+		parentNode=new int[maxNode+1];
+		nodeRank=new int[maxNode+1];
+		Arrays.fill(parentNode,-1);
 		edge[] res=new edge[maxNode];
 		int counter=0;
 		for (int i = 0; i < runs; i++) {
-			if(join(nodes[arr[i].nodeOne],nodes[arr[i].nodeTwo]))
+			if(join(arr[i].nodeOne,arr[i].nodeTwo))
 			{
 				res[counter]=arr[i];
 				counter++;
@@ -34,28 +36,51 @@ public class kruskal {
 		for (int i = 0; i < res.length; i++) {
 			System.out.println("nodeOne: "+res[i].nodeOne+" nodeTwo: "+res[i].nodeTwo+" edgeWeight: "+res[i].weight);
 		}
+		adjlist[] adj=new adjlist[maxNode+1];
+		for (int i = 0; i < maxNode+1; i++) {
+			adj[i]=new adjlist();
+		}
+		for (int i = 0; i < res.length; i++) {
+			adj[res[i].nodeOne].add(res[i].nodeTwo,res[i].weight);
+			adj[res[i].nodeTwo].add(res[i].nodeOne,res[i].weight);
+		}
+
+		mst=new int[maxNode+1];
+		mst[0]=-1;
+		dfs(0,adj,new boolean[maxNode+1]);
+		System.out.println(Arrays.toString(mst));
 
 		in.close(); out.close();
 	}
 
-	static node findParent(node a)
+	static void dfs(int pos,adjlist[] arr,boolean[] vis)
 	{
-		if(a.parent==null) return a;
-		return a.parent=findParent(a.parent);
+		vis[pos]=true;
+		for (int i = 0; i < arr[pos].list.size(); i++) {
+			if(vis[arr[pos].list.get(i)]) continue;
+			mst[arr[pos].list.get(i)]=arr[pos].weight.get(i);
+			dfs(arr[pos].list.get(i),arr,vis);
+		}
 	}
 
-	static boolean join(node a,node b)
+	static int findParent(int pos)
 	{
-		node one=findParent(a);
-		node two=findParent(b);
+		if(parentNode[pos]==-1) return pos;
+		return parentNode[pos]=findParent(parentNode[pos]);
+	}
+
+	static boolean join(int a,int b)
+	{
+		int one=findParent(a);
+		int two=findParent(b);
 		if(one==two) return false;
-		if(one.rank>=two.rank)
+		if(nodeRank[one]>=nodeRank[two])
 		{
-			if(one.rank==two.rank) one.rank++;
-			two.parent=one;
+			if(nodeRank[one]==nodeRank[two]) nodeRank[one]++;
+			parentNode[two]=one;
 		}
 		else
-			one.parent=two;
+			parentNode[one]=two;
 		return true;
 	}
 
@@ -78,6 +103,22 @@ public class kruskal {
 		public int compareTo(edge a)
 		{
 			return weight-a.weight;
+		}
+	}
+
+	static class adjlist
+	{
+		ArrayList<Integer> list;
+		ArrayList<Integer> weight;
+		public adjlist()
+		{
+			list=new ArrayList<>();
+			weight=new ArrayList<>();
+		}
+		public void add(int a,int b)
+		{
+			list.add(a);
+			weight.add(b);
 		}
 	}
 
