@@ -37,7 +37,7 @@ public class dijkstraAdjmat {
 			if(pos==-1) break;
 			vis[pos]=true;
 			for (int i = 0; i < nodes; i++) {
-				if(adjmat[pos][i]==0) continue;
+				if(vis[i]||adjmat[pos][i]==0) continue;
 				dis[i]=Math.min(dis[i],dis[pos]+adjmat[pos][i]);
 			}
 		}
