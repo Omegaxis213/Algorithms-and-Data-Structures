@@ -97,20 +97,19 @@ public class HLDNode {
 			else
 			{
 				int res=0;
-				if(chainOne!=nodeToChain[lcaNode])
+				while(chainOne!=nodeToChain[lcaNode])
 				{
 					res+=chainSegtree.querySum(1,0,runs-1,chainPos[chainOne],chainPos[chainOne]+chains[chainOne].map.get(one));
 					one=parentNode[chains[chainOne].headOfChain];
 					chainOne=parentChain[chainOne];
 				}
-				if(chainTwo!=nodeToChain[lcaNode])
+				while(chainTwo!=nodeToChain[lcaNode])
 				{
 					res+=chainSegtree.querySum(1,0,runs-1,chainPos[chainTwo],chainPos[chainTwo]+chains[chainTwo].map.get(two));
 					two=parentNode[chains[chainTwo].headOfChain];
 					chainTwo=parentChain[chainTwo];
 				}
-				if(one!=two)
-					res+=chainSegtree.querySum(1,0,runs-1,chainPos[chainOne]+chains[chainOne].map.get(lcaNode),chainPos[chainOne]+Math.max(chains[chainOne].map.get(one),chains[chainOne].map.get(two)));
+				res+=chainSegtree.querySum(1,0,runs-1,chainPos[chainOne]+chains[chainOne].map.get(lcaNode),chainPos[chainOne]+Math.max(chains[chainOne].map.get(one),chains[chainOne].map.get(two)));
 				out.println(res);
 			}
 		}
