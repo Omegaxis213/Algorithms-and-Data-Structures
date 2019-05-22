@@ -33,6 +33,7 @@ public class dijkstraPQ {
 			if(vis[temp.pos]) continue;
 			vis[temp.pos]=true;
 			for (int i = 0; i < arr[temp.pos].list.size(); i++) {
+				if(vis[arr[temp.pos].list.get(i)]) continue;
 				if(dis[arr[temp.pos].list.get(i)]>dis[temp.pos]+arr[temp.pos].val.get(i))
 				{
 					dis[arr[temp.pos].list.get(i)]=dis[temp.pos]+arr[temp.pos].val.get(i);
