@@ -40,6 +40,7 @@ public class dijkstraAdjlist {
 			if(pos==-1) break;
 			vis[pos]=true;
 			for (int i = 0; i < arr[pos].list.size(); i++) {
+				if(vis[arr[pos].list.get(i)]) continue;
 				dis[arr[pos].list.get(i)]=Math.min(dis[arr[pos].list.get(i)],dis[pos]+arr[pos].val.get(i));
 			}
 		}
